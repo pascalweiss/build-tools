@@ -22,6 +22,7 @@ build-image:
   before_script:
     - *default-before-script
   script:
+    - while true; do echo "waiting"; sleep 5; done 
     - $CI_PROJECT_DIR/run/build_and_push.sh
 
 test-image:
