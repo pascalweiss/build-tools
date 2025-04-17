@@ -20,7 +20,7 @@ REMOTE_IMAGE_NAME="$DOCKER_REGISTRY/$IMAGE_NAME:$TAG"
 echo "Building $LOCAL_IMAGE_NAME with Podman..."
 
 # Build the image with fully qualified image name to avoid short-name resolution error
-podman build --format docker -t "$LOCAL_IMAGE_NAME" -f Dockerfile .
+podman build --privileged --format docker -t "$LOCAL_IMAGE_NAME" -f Dockerfile .
 
 echo "Build completed successfully!"
 
