@@ -1,23 +1,28 @@
-FROM alpine:3.18
+FROM quay.io/podman/stable:v5.4.2
 
-LABEL maintainer="Your Name <your.email@example.com>"
-LABEL description="CI/CD build tools container for GitLab pipelines"
-LABEL version="1.0"
-
-# Install dependencies - added CI/CD tools
-RUN apk add --no-cache \
+# Installing essential tools for the container:
+# - curl: For making HTTP requests and downloading files
+# - python3 & py3-pip: For running Python scripts and installing Python packages
+# - bash: Improved shell for scripting and interactive use
+# - git: For version control and source code management
+# - openssl: For SSL/TLS cryptographic functions
+# - yq & jq: For parsing and manipulating YAML and JSON respectively
+# - ca-certificates: For SSL certificate verification
+# - unzip, tar, gzip: For working with compressed files and archives
+RUN dnf install -y \
     curl \
     python3 \
-    py3-pip \
+    python3-pip \
     bash \
     git \
     openssl \
-    yq \
     jq \
+    yq \
     ca-certificates \
     unzip \
     tar \
-    gzip
+    gzip && \
+    dnf clean all
 
 # Install Helm
 RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
@@ -31,11 +36,11 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     mv kubectl /usr/local/bin/
 
 # Verify installations
-RUN helm version && python3 --version && kubectl version --client
+RUN helm version && python3 --version && kubectl version --client && podman --version
 
-# Create non-root user for security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+# Note: We're using the "podman" user that's already configured in the base image
+# This user is specifically set up for rootless podman operation
+USER podman
 
 # Set working directory
 WORKDIR /app
