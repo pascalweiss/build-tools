@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test 
+
+variables:
+  DOCKER_REGISTRY: "YOUR-VALUE"
+  NEXUS_PASSWORD: "YOUR-VALUE-PASSWORD" # I wouldn't do this to a company. But for my personal educational purpose, this is fine
+  NEXUS_USERNAME: "YOUR-VALUE-USER"
+  IMAGE_NAME: "build-tools"
+  TAG: 0.1.0
+
+.default-before-script: &default-before-script 
+  - 'echo "Runner info: $CI_RUNNER_DESCRIPTION"'
+  - cat /etc/os-release
+  - env | sort
+
+build-image:
+  stage: build
+  image: quay.io/podman/stable:v5.4.2
+  tags:
+    - kubernetes
+  before_script:
+    - *default-before-script
+  script:
+    - $CI_PROJECT_DIR/run/build_and_push.sh
+
+test-image:
+  stage: test
+  image: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${TAG}
+  needs:
+    - build-image
+  tags:
+    - kubernetes
+  before_script:
+    - *default-before-script
+  script:
+    - set -e  # Ensure job fails if any command fails
+    - podman run --rm hello-world
