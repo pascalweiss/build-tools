@@ -12,7 +12,6 @@ variables:
 .default-before-script: &default-before-script 
   - 'echo "Runner info: $CI_RUNNER_DESCRIPTION"'
   - cat /etc/os-release
-  - env | sort
 
 build-image:
   stage: build
@@ -23,20 +22,6 @@ build-image:
     - *default-before-script
   script:
     - $CI_PROJECT_DIR/run/build_and_push.sh
-
-build-helm-chart:
-  stage: build
-  image: alpine/helm:3.12.0
-  tags:
-    - kubernetes
-  before_script:    
-    - *default-before-script
-    - apk add --no-cache yq
-    - helm version
-    - yq --version
-  script:
-    - $CI_PROJECT_DIR/run/helm_package.sh
-    - $CI_PROJECT_DIR/run/helm_publish.sh
 
 test-image:
   stage: test
