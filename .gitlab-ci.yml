@@ -32,3 +32,13 @@ test-image:
   script:
     - set -e  # Ensure job fails if any command fails
     - podman run --rm hello-world
+
+secret-detection:
+  stage: test
+  image: zricethezav/gitleaks:latest 
+  tags: 
+    - kubernetes
+  script :
+    - *default-before-script
+    - gitleaks detect --verbose ,--source=$CI_PROJECT_DIR 
+    
