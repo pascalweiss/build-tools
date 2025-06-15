@@ -3,11 +3,8 @@ stages:
   - test 
 
 variables:
-  DOCKER_REGISTRY: "YOUR-VALUE"
   IMAGE_NAME: "build-tools"
   TAG: 0.1.0
-  HELM_REPO: "oci://YOUR-VALUE-HELM"
-  HELM_LOGIN_URL: "https://YOUR-VALUE-HELM"
 
 .default-before-script: &default-before-script 
   - 'echo "Runner info: $CI_RUNNER_DESCRIPTION"'
