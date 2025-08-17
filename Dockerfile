@@ -9,6 +9,7 @@ FROM quay.io/podman/stable:v5.4.2
 # - yq & jq: For parsing and manipulating YAML and JSON respectively
 # - ca-certificates: For SSL certificate verification
 # - unzip, tar, gzip: For working with compressed files and archives
+# - nodejs & npm: For Node.js runtime and package management
 RUN dnf install -y \
     curl \
     python3 \
@@ -21,7 +22,9 @@ RUN dnf install -y \
     ca-certificates \
     unzip \
     tar \
-    gzip && \
+    gzip \
+    nodejs \
+    npm && \
     dnf clean all
 
 # Install Helm
@@ -36,7 +39,7 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     mv kubectl /usr/local/bin/
 
 # Verify installations
-RUN helm version && python3 --version && kubectl version --client && podman --version
+RUN helm version && python3 --version && kubectl version --client && podman --version && node --version && npm --version
 
 # Note: We're using the "podman" user that's already configured in the base image
 # This user is specifically set up for rootless podman operation
