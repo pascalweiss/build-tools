@@ -38,6 +38,9 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     chmod +x kubectl && \
     mv kubectl /usr/local/bin/
 
+# Fix npm cache permissions before switching to podman user
+RUN mkdir -p /home/podman/.npm && chown -R 1000:1000 /home/podman/.npm
+
 # Note: We're using the "podman" user that's already configured in the base image
 # This user is specifically set up for rootless podman operation
 USER podman
