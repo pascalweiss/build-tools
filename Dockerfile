@@ -38,12 +38,12 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     chmod +x kubectl && \
     mv kubectl /usr/local/bin/
 
-# Verify installations
-RUN helm version && python3 --version && kubectl version --client && podman --version && node --version && npm --version
-
 # Note: We're using the "podman" user that's already configured in the base image
 # This user is specifically set up for rootless podman operation
 USER podman
+
+# Verify installations (run as podman user to initialize npm cache with correct ownership)
+RUN helm version && python3 --version && kubectl version --client && podman --version && node --version && npm --version
 
 # Set working directory
 WORKDIR /app
